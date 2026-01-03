@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旧故事收集馆</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif SC', serif, 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f3e9;
+            color: #333;
+            line-height: 1.6;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4c4ad' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #d4c4ad;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            color: #8B4513;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-style: italic;
+            color: #a0826d;
+            font-size: 1.2rem;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 40px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            margin: 0 10px;
+            background-color: #d4c4ad;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #5c4b3d;
+            font-weight: bold;
+        }
+        
+        .nav-btn:hover {
+            background-color: #8B4513;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-btn.active {
+            background-color: #8B4513;
+            color: #fff;
+        }
+        
+        .content {
+            min-height: 400px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border: 1px solid #e8d9c5;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .story-card {
+            background: linear-gradient(to bottom, #f5ebdc, #e8d9c5);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+        
+        .story-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .story-card h3 {
+            color: #8B4513;
+            margin-bottom: 10px;
+        }
+        
+        .story-card p {
+            color: #7a6655;
+            font-size: 0.9rem;
+        }
+        
+        .story-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #555;
+        }
+        
+        .story-content h2 {
+            color: #8B4513;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8d9c5;
+        }
+        
+        .back-btn {
+            padding: 10px 20px;
+            background-color: #d4c4ad;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background-color: #8B4513;
+            color: white;
+        }
+        
+        form {
+            display: grid;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        input, textarea {
+            padding: 12px;
+            border: 1px solid #d4c4ad;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: #f9f3e9;
+        }
+        
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        button[type="submit"] {
+            padding: 12px;
+            background-color: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #6b3a10;
+        }
+        
+        .contact-info {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .contact-info p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #a0826d;
+            border-top: 2px solid #d4c4ad;
+            margin-top: 40px;
+        }
+        
+        .help-section {
+            background-color: #f5ebdc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #8B4513;
+        }
+        
+        .help-section h3 {
+            color: #8B4513;
+            margin-bottom: 15px;
+        }
+        
+        .help-section ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .help-section li {
+            margin-bottom: 10px;
+        }
+        
+        /* 新增的排版样式 */
+        .text-bold {
+            font-weight: bold;
+        }
+        
+        .text-underline {
+            text-decoration: underline;
+        }
+        
+        .text-highlight {
+            background-color: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .text-italic {
+            font-style: italic;
+        }
+        
+        .story-image {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-large {
+            font-size: 1.2rem;
+        }
+        
+        .quote {
+            border-left: 4px solid #d4c4ad;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .story-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                margin: 5px 0;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>旧故事收集馆</h1>
+            <p class="subtitle">收集时光中的故事，珍藏岁月的记忆</p>
+        </header>
+        
+        <nav>
+            <button class="nav-btn active" data-page="home">首页</button>
+            <button class="nav-btn" data-page="read">读故事</button>
+            <button class="nav-btn" data-page="submit">我要投稿</button>
+            <button class="nav-btn" data-page="contact">联系我们</button>
+        </nav>
+        
+        <div class="content">
+            <div id="home" class="page active">
+                <h2>欢迎来到旧故事收集馆</h2>
+                <p>这里是一个收集和分享旧时光故事的地方。我们珍视每一个故事，无论是家族的传承、个人的经历，还是那些被岁月掩埋的民间传说。</p>
+                <p>请点击上方菜单浏览我们的故事集，或者分享您自己的故事。</p>
+                <div class="story-grid">
+                    <div class="story-card" onclick="showStory('story1')">
+                        <h3>爷爷的怀表</h3>
+                        <p>一个关于传承与时间的故事</p>
+                    </div>
+                    <div class="story-card" onclick="showStory('story2')">
+                        <h3>老街的回忆</h3>
+                        <p>记录一条老街的变迁与故事</p>
+                    </div>
+                    <div class="story-card" onclick="showStory('story3')">
+                        <h3>外婆的绣花鞋</h3>
+                        <p>一双绣花鞋背后的爱情故事</p>
+                    </div>
+                    <div class="story-card" onclick="showStory('story4')">
+                        <h3>2025年的回忆</h3>
+                        <p>一个关于成长与感悟的年度总结</p>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3>如何在VSCode中浏览此网页</h3>
+                    <ol>
+                        <li>将本文件保存为 <code>old_stories.html</code></li>
+                        <li>在VSCode中右键点击文件，选择"Open with Live Server"（如果已安装Live Server扩展）</li>
+                        <li>或者，在文件资源管理器中找到该文件，双击直接用浏览器打开</li>
+                        <li>也可以使用VSCode的"Open in Browser"扩展：安装后右键选择"Open in Default Browser"</li>
+                    </ol>
+                    
+                    <h3 style="margin-top: 20px;">排版小技巧</h3>
+                    <ul>
+                        <li><strong>加粗文字</strong>：使用 &lt;strong&gt;文字&lt;/strong&gt; 或 &lt;b&gt;文字&lt;/b&gt;</li>
+                        <li><u>下划线</u>：使用 &lt;u&gt;文字&lt;/u&gt;</li>
+                        <li><i>斜体</i>：使用 &lt;i&gt;文字&lt;/i&gt; 或 &lt;em&gt;文字&lt;/em&gt;</li>
+                        <li class="text-highlight">高亮背景：添加 class="text-highlight"</li>
+                        <li>插入图片：&lt;img src="图片地址" alt="描述文字"&gt;</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="read" class="page">
+                <h2>故事目录</h2>
+                <p>请选择一个故事阅读：</p>
+                <div class="story-grid">
+                    <div class="story-card" onclick="showStory('story1')">
+                        <h3>爷爷的怀表</h3>
+                        <p>一个关于传承与时间的故事</p>
+                    </div>
+                    <div class="story-card" onclick="showStory('story2')">
+                        <h3>老街的回忆</h3>
+                        <p>记录一条老街的变迁与故事</p>
+                    </div>
+                    <div class="story-card" onclick="showStory('story3')">
+                        <h3>外婆的绣花鞋</h3>
+                        <p>一双绣花鞋背后的爱情故事</p>
+                    </div>
+                    <div class="story-card" onclick="showStory('story4')">
+                        <h3>2025年的回忆</h3>
+                        <p>一个关于成长与感悟的年度总结</p>
+                    </div>
+                    <div class="story-card" onclick="showStory('story5')">
+                        <h3>山村教师</h3>
+                        <p>一位山村教师的三十年坚守</p>
+                    </div>
+                    <div class="story-card" onclick="showStory('story6')">
+                        <h3>战争家书</h3>
+                        <p>一封穿越战火的家书</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="story-detail" class="page">
+                <button class="back-btn" onclick="goBackToStories()">返回目录</button>
+                <div class="story-content">
+                    <h2 id="story-title">故事标题</h2>
+                    <div id="story-text"></div>
+                </div>
+            </div>
+            
+            <div id="submit" class="page">
+                <h2>分享您的故事</h2>
+                <p>我们期待聆听您的故事，请填写以下表单：</p>
+                <form>
+                    <input type="text" placeholder="您的姓名" required>
+                    <input type="email" placeholder="您的邮箱" required>
+                    <input type="text" placeholder="故事标题" required>
+                    <textarea placeholder="您的故事内容..." required></textarea>
+                    <button type="submit">提交故事</button>
+                </form>
+                
+                <div class="help-section">
+                    <h3>投稿排版指南</h3>
+                    <p>在您的故事中可以使用以下HTML标签来排版：</p>
+                    <ul>
+                        <li><strong>&lt;strong&gt;</strong> - 加粗文字</li>
+                        <li><u>&lt;u&gt;</u> - 下划线</li>
+                        <li><em>&lt;em&gt;</em> - 斜体（强调）</li>
+                        <li>&lt;br&gt; - 换行</li>
+                        <li>&lt;p&gt; - 段落</li>
+                        <li>&lt;h3&gt; - 小标题</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="contact" class="page">
+                <h2>联系我们</h2>
+                <div class="contact-info">
+                    <p>如果您有任何问题或建议，欢迎通过以下方式联系我们：</p>
+                    <p>邮箱：2024101438@ruc.edu.cn</p>
+                    <p>电话：15590292938</p>
+                    <p>地址：北京市海淀区中关村大街59号</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 旧故事收集馆 - 珍藏每一段时光的记忆</p>
+        </footer>
+    </div>
+
+    <script>
+        // 页面导航功能
+        document.querySelectorAll('.nav-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // 移除所有按钮的active类
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // 给当前点击的按钮添加active类
+                this.classList.add('active');
+                
+                // 隐藏所有页面
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // 显示对应的页面
+                const pageId = this.getAttribute('data-page');
+                if (pageId === 'read') {
+                    document.getElementById('read').classList.add('active');
+                } else if (pageId === 'submit') {
+                    document.getElementById('submit').classList.add('active');
+                } else if (pageId === 'contact') {
+                    document.getElementById('contact').classList.add('active');
+                } else {
+                    document.getElementById('home').classList.add('active');
+                }
+            });
+        });
+        
+        // 故事数据
+        const stories = {
+            story1: {
+                title: "爷爷的怀表",
+                content: `<p>那是一只黄铜制成的怀表，表盖上刻着精细的花纹，已经有些模糊了。表链是银质的，也因为岁月的磨砺而失去了光泽。这只表是我爷爷的爷爷传下来的，至少有一百多年的历史了。</p>
+                <p>我记得小时候，爷爷总是把它放在马甲的口袋里。每次我问时间，他就会郑重地掏出怀表，按下按钮，表盖"啪"一声打开，露出白色的表盘和黑色的罗马数字。然后他会眯起眼睛，仔细地看一会儿，再告诉我准确的时间。</p>
+                <p>爷爷说，这只表见证了我们家四代人的成长。它见证过曾祖父的婚礼，祖父的出生，父亲的大学毕业，还有我的第一声啼哭。它不仅是计时工具，更是我们家族的记忆载体。</p>
+                <p>如今，爷爷已经不在了，这只表传到了我的手中。我很少用它来看时间，手机更加方便准确。但我仍然会每周给它上发条，听着那熟悉的"滴答"声，仿佛能听到时光流逝的声音，能感受到历代亲人的存在。</p>
+                <p>有时候，我会打开表盖，看着指针一圈圈地转动，想起爷爷眯着眼看时间的样子。我知道，这只表还会继续走下去，记录更多我们家族的故事，直到传给下一代，再下一代...</p>`
+            },
+            story2: {
+                title: "老街的回忆",
+                content: `<p>我出生在这条老街，在这里度过了整个童年。那时的街道不像现在这样宽敞平整，而是由青石板铺成，每当下雨，石板会被洗得发亮，缝隙中会长出小小的青苔。</p>
+                <p>街道两旁是各种小店：王师傅的理发店总是飘着洗发水的香味；李奶奶的杂货铺里什么都有，从针线到糖果；还有那家老书店，老板是个戴眼镜的老先生，总是坐在柜台后面看书。</p>
+                <p>最令我难忘的是街角的那棵大槐树。夏天，树荫能遮住半条街，我们孩子们就在树下玩耍，大人们则坐在树下乘凉、下棋、聊天。槐花开的季节，整条街都弥漫着淡淡的甜香。</p>
+                <p>如今，老街已经变了模样。青石板被柏油路取代，老店大多已经关门，取而代之的是现代化的商铺。只有那棵槐树还在，虽然比以前更加苍老，但每到夏天，依然枝繁叶茂。</p>
+                <p>我偶尔还会回到这里，走在已经陌生的街道上，努力寻找记忆中的痕迹。那些美好的回忆，就像被封存在时光胶囊里，永远不会褪色。</p>`
+            },
+            story3: {
+                title: "外婆的绣花鞋",
+                content: `<p>外婆有一双绣花鞋，红色的缎面上绣着精致的牡丹和蝴蝶。鞋尖微微上翘，边缘镶着一圈细小的珍珠。这双鞋是外公送给她的定情信物，她珍藏了一辈子。</p>
+                <p>外婆说，她十八岁那年，外公专门请了城里最好的绣娘做了这双鞋。当时，这么精致的绣花鞋在村里引起了不小的轰动，姑娘们都羡慕得不得了。</p>
+                <p>外婆只在特别重要的场合才穿这双鞋：他们的婚礼上，每个孩子的满月酒上，还有每年春节。我记得小时候，最期待的就是看外婆穿上这双鞋，配上她那件蓝色的旗袍，漂亮得像是从画里走出来的人。</p>
+                <p>外公去世得早，外婆一个人把四个孩子拉扯大。生活艰难的时候，有人劝她把鞋卖了换钱，她坚决不肯。她说这不仅是鞋，更是她和外公爱情的见证，是无价的。</p>
+                <p>现在，外婆已经九十多岁了，那双鞋还完好地保存在她的檀木箱子里。虽然鞋面的颜色已经有些暗淡，珍珠也脱落了几颗，但绣花依然鲜艳如初。每次我去看她，她总会拿出鞋来，轻轻地抚摸，眼睛里闪着年轻时的光芒。</p>
+                <p>我知道，这双鞋承载的不仅是外婆的青春和爱情，更是一个时代的记忆。它将会作为传家宝，一代代传下去。</p>`
+            },
+            story4: {
+                title: "2025年的回忆",
+                content: `<div class="text-center">
+                    <p class="text-large"><strong>这一辈子很短，如白驹过隙，但那种心情很长，如高山大川绵延不绝。</strong></p>
+                </div>
+                
+                <p>我原本也想写一份年终总结，可又总觉得，这样絮絮叨叨的文字，大约除了自己不会有人真正读完。一年结束了，但这一年留下的回忆太多、瞬间太密，我害怕遗漏谁，也害怕遗漏某个重要的感受。一旦遗漏，文字就不再完整。等很多年后再回头看，提起2025，只剩下这段文字，仿佛这一年就只有这些，不断删减、不断丢失。</p>
+                
+                <p><u>可2025并不只属于2025。</u></p>
+                
+                <p>我更想记住的是，我在这一年收到的礼物，当然，2025也留下了更多，会在未来某个傍晚悄然返还：耳机里忽然响起一首熟悉的歌，思绪被牵回到从前某一天的心境。这样的瞬间太正常了，人好像总是如此，一边向前走，一边反复回望。</p>
+                
+                <p>每天醒来就泡在图书馆里的日子太过安逸，甚至让我很难想象，上半年我还在上早八、做pre。</p>
+                
+                <p>这一年最大的礼物，也许是一个平平无奇的我，连做题家都不算合格的人来到了人大，遇见了让我无比感激的导师。<span class="text-highlight">我很清楚自己能力平平，所幸还有一丝不多不少的热爱，刚好支撑我继续往前走。</span></p>
+                
+                <p>不知道从什么时候开始，我习惯性地刷起就业平台。看到"治国理政南平"时，<strong>兴冲冲报名</strong>。结果也不出所料几个月的外出实在是耽误我本来就进展很慢的科研，没有成功交上去的报名表，却成了一颗种子，在五月生根发芽。</p>
+                
+                <div class="quote">
+                    <p>如果说毕业有什么真正的节点，答辩或许算一个。</p>
+                </div>
+                
+                <p>我不是主角，只是负责记录的答辩秘书。但很幸运，主角中有一位我格外喜欢的姐姐。那天走出教二，阳光明媚，草坪上孩子们嬉闹，树荫下三三两两的学生坐着聊天。后来某天读到朋友写夏天的微风、让人回忆起高考走出考场的那个午后，我忽然又想起那天下午，和姐姐一起走出教二的场景。文字牵动回忆，有了一瞬间的感同身受。</p>
+                
+                <p>那天晚上，我送出了两束鲜花。</p>
+                
+                <p>她们是我的贵人。无论是学习、生活，还是以后的人生道路，我都无比确信，自己一直被生活眷顾。贺卡上的每一句话都反复斟酌。是两位姐姐的鼓励，让我在人生中有了为数不多、却异常珍贵的"向前争取"的时刻。</p>
+                
+                <p>如果追溯，这一切甚至可以回到几年前——那次心血来潮去查人大分数线，那次机缘巧合加进环境学院的群，认识了姐姐，才有了今天这些无法复刻的指引。</p>
+                
+                <p><strong>五月的我并不知道，那个下午随手刷到的"知行合一"，会带给我带来一个多么精彩的夏天。</strong></p>
+                
+                <p>"南平"这颗种子在五月破土而出，疯狂生长。为了去福州，我赌上了自己唯一能报的一个"三不限"岗位，在自我评价里固执地写下对闽江河畔、山海脉络的向往。收到录取通知的那天，我开心得几乎不知所措。</p>
+                
+                <!-- 插入图片示例 -->
+                <!-- 替换src中的链接为您的图片地址 -->
+                <!-- <img src="https://via.placeholder.com/800x400" alt="福州风景" class="story-image"> -->
+                
+                <p>感谢导师，让我有幸参与"行走美丽中国"，再次来到鄂尔多斯。</p>
+                
+                <p>短短几天的调研，让我看见了新能源的发展、国家战略的转型。坦白说，我并不是什么科研的料子，真正留在我记忆里的，是一个党支书带着村民致富的故事。还有，<em>鄂尔多斯的星星，真的很好看。</em></p>
+                
+                <p>酷我音乐的一年总结，把我拉回到那天坐了八个小时高铁去福州的路上。我循环播放了五十多遍《最美的瞬间》：</p>
+                
+                <div class="text-center text-italic">
+                    <p>你轻轻地走过那，</p>
+                    <p>风雨花丛中，</p>
+                    <p>每一点一滴带走我醒来的梦。</p>
+                </div>
+                
+                <p>在打算写下这份年终总结的时候，我无比确信，福州会是我笔墨最多的地方。可写到这里，许多话却哽在喉咙里——想说的太多，又不知从何说起。</p>
+                
+                <p><u>我该和你说闽江的细雨，还是爱情岛的晚风，</u></p>
+                <p><u>说烟台山上熙熙攘攘，还是三坊七巷的爱情树郁郁苍苍</u></p>
+                <p><u>说有福之州茉莉花香，还是说平潭岛的海绝美难忘</u></p>
+                
+                <p>该怎么描述福州的日子的幸福呢，是清晨奔向小区门口的桂花糕，是哥哥姐姐们和谐温暖的相处氛围，是回到家和好朋友一起坐在客厅看电视的安稳，是夜晚点一份外卖，吃着肉燕和鱼丸的满足。</p>
+                
+                <p><strong>为什么是福州？</strong></p>
+                
+                <p>也许只是一次闲聊中的玩笑——如果考不上研，什么都没考上，就去福州，等台湾回归。后来，我考上了研，也真的来到了福州。</p>
+                
+                <p>曾经笃定自己不考公的我，也在这里渐渐动摇。或许，这正是命运兜兜转转，送给我的一份礼物。</p>
+                
+                <div class="quote">
+                    <p>如果说福州让我开始期待未来的工作，那么四川巴中，则让我对工作本身生出了情怀。</p>
+                </div>
+                
+                <p>金秋时节，"北京香山的红叶，不及光雾山十分之一的美"让我对这座城市充满好奇。飞机掠过连绵群山，走出机场，看见并不繁华的城郊，我才真切意识到，这可能不是一座富裕的城市。</p>
+                
+                <p>蜀道难行，山路蜿蜒。调研地之间动辄数小时的车程，最初还能打趣一句"也算坐上考斯特了"。可当车辆真正穿过群山与村落，我忍不住想：如果没有政府，我是否会来到巴中，这条路又长又难走，又有多少人会走到这里，一粒种子是否可以像小学课本中写得那样一年一年开得满山田野，中国又有多少愿意在这里扎根的种子，又有多少像这样需要绿色生命希望的土地。</p>
+                
+                <p>对我们而言，这或许只是一次普通的调研；可对巴中来说，却是一件会上新闻的大事。初到巴中，领导关怀备至，全程陪同。车行在街巷之间，我看见歇业的店铺、老旧的设施、稀少的年轻人。那一刻，坐在车里的我，感受到一种难以言说的悲伤。这里像极了农村老家热情的叔叔，知道我来了，杀鸡做了一桌好菜。鸡很好吃，叔叔也真的关心我，可我清楚地看到，他并不富裕。于是我忍不住想：我是不是该做点什么？这样一座拥有丰厚红色资源的英雄故乡，本该更好。</p>
+                
+                <p>"师兄，如果我以后打算考公，有没有推荐的地区或城市？"</p>
+                <p>"如果有情怀、有热血，就去边疆，闯出一片天地。"</p>
+                
+                <p>那天周日，我没睡成懒觉，只是去凑人数听讲座。整场昏昏欲睡，却唯独记住了最后这段互动。</p>
+                
+                <p class="text-bold">如果自私一点，我希望身边的人都能快乐幸福；</p>
+                <p class="text-bold">如果宏大一点，我想要漫山遍野都是绿色的希望。</p>
+                
+                <p>这一年，生活给予我的馈赠与感动实在太多，一切都恰到好处。</p>
+                
+                <p>我知道，属于我的礼物远不止这些。那些一闪而过、却彼此相似的瞬间，我都记得。</p>
+                
+                <div class="text-center text-large">
+                    <p><strong>正如开篇所说——</strong></p>
+                    <p><strong>这一辈子很短，可这些心情，如高山大川，绵延不绝。</strong></p>
+                </div>`
+            }
+        };
+        
+        // 显示故事详情
+        function showStory(storyId) {
+            const story = stories[storyId];
+            if (story) {
+                document.getElementById('story-title').textContent = story.title;
+                document.getElementById('story-text').innerHTML = story.content;
+                
+                // 隐藏所有页面，显示故事详情页
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                document.getElementById('story-detail').classList.add('active');
+                
+                // 更新导航按钮状态
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+        }
+        
+        // 返回故事目录
+        function goBackToStories() {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('read').classList.add('active');
+            
+            // 设置读故事按钮为active
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-page') === 'read') {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
